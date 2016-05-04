@@ -34,6 +34,7 @@ public class BaseApplication extends Application {
         mMainThreadId = android.os.Process.myTid();
         mMainThreadHandler = new Handler();
         handlerThread = new HandlerThread("bg", 10);
+        handlerThread.start();
         mBgThreadHandler = new Handler(handlerThread.getLooper());
         activityStack = new Stack<>();
     }

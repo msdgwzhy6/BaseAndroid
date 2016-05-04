@@ -5,7 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 
-import com.che.carcheck.MainActivity;
+import com.che.carcheck.ui.home.MainActivity;
 import com.che.carcheck.R;
 import com.che.carcheck.support.util.OkHttpUtil;
 import com.che.carcheck.support.view.LoadDialog;
