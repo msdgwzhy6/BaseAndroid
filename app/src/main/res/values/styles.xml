@@ -1,0 +1,28 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
+
+    <!-- 用于加载的dialog的样式 -->
+    <style name="LoadingDialog" parent="@android:style/Theme.Dialog">
+        <item name="android:windowFrame">@null</item><!-- 窗框 -->
+        <item name="android:windowIsFloating">true</item><!-- 窗口浮动 -->
+        <item name="android:windowIsTranslucent">@null</item><!-- 窗口半透明 -->
+        <item name="android:windowNoTitle">true</item><!-- 窗口没有标题 -->
+        <item name="android:windowBackground">@android:color/transparent</item><!-- 背景的颜色 -->
+        <item name="android:backgroundDimEnabled">false</item><!--activity不变暗-->
+        <item name="android:windowContentOverlay">@null</item><!-- 窗口内容覆盖 -->
+    </style>
+
+    <!--用于弹出顶部弹窗的样式-->
+    <style name="PopupAnimation" parent="android:Animation">
+        <item name="android:windowEnterAnimation">@anim/popup_in</item>
+        <item name="android:windowExitAnimation">@anim/popup_out</item>
+    </style>
+
+</resources>
