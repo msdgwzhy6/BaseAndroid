@@ -1,4 +1,4 @@
-package com.che.carcheck.support.util;
+package com.che.carcheck.support.helper;
 
 import android.app.Activity;
 import android.app.Dialog;
@@ -8,27 +8,30 @@ import com.che.carcheck.support.view.LoadDialog;
 /**
  * 作者：余天然 on 16/5/4 下午4:44
  */
-public class LoadDialogUtil {
+public class DialogHelper {
 
     private static Dialog progressDialog;
     public static Activity activity;
+    int layoutResId;//加载动画的布局
+    int imgResId;//加载动画的图片
+    int gifResId;//加载动画的动画
 
 
     //静态内部类的单例模式
-    public static LoadDialogUtil getInstance(Activity _activity) {
+    public static DialogHelper getInstance(Activity _activity) {
         activity = _activity;
         return SingletonHolder.mInstance;
     }
 
     private static class SingletonHolder {
-        private static final LoadDialogUtil mInstance = new LoadDialogUtil(activity);
+        private static final DialogHelper mInstance = new DialogHelper(activity);
     }
 
-    public LoadDialogUtil(Activity activity) {
-        progressDialog = new LoadDialog(activity);
+    public DialogHelper(Activity activity) {
+        progressDialog = new LoadDialog(activity, layoutResId,imgResId,gifResId);
     }
 
-    public void showDialog() {
+    public void showLoading() {
         try {
             if (progressDialog != null && progressDialog.isShowing()) {
                 return;
@@ -39,7 +42,7 @@ public class LoadDialogUtil {
         }
     }
 
-    public void dismissDialog() {
+    public void dismissLoading() {
         try {
             if (progressDialog != null) {
                 progressDialog.dismiss();

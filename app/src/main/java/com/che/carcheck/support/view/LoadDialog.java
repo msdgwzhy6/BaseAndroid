@@ -15,10 +15,6 @@ public class LoadDialog extends Dialog {
     int imgResId;//加载动画的图片
     int gifResId;//加载动画的动画
 
-    public LoadDialog(Context context) {
-        super(context, R.style.LoadingDialog);
-    }
-
     public LoadDialog(Context context,int layoutResId,int imgResId, int gifResId) {
         super(context, R.style.LoadingDialog);
         this.layoutResId=layoutResId;

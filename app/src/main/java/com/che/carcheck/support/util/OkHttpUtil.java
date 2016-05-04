@@ -2,12 +2,12 @@ package com.che.carcheck.support.util;
 
 import android.os.Environment;
 
+import com.alibaba.fastjson.JSON;
 import com.che.carcheck.support.config.BaseApplication;
 import com.squareup.okhttp.Cache;
 import com.squareup.okhttp.Call;
 import com.squareup.okhttp.Callback;
-import com.squareup.okhttp.FormEncodingBuilder;
-import com.squareup.okhttp.Headers;
+import com.squareup.okhttp.MediaType;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.RequestBody;
@@ -17,8 +17,6 @@ import java.io.File;
 import java.io.IOException;
 import java.net.CookieManager;
 import java.net.CookiePolicy;
-import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -26,6 +24,7 @@ import java.util.concurrent.TimeUnit;
  */
 public class OkHttpUtil {
 
+    String ContentType_Json = "application/json; charset=utf-8";
     private OkHttpClient okHttpClient;
 
     public static int CACHE_SIZE = 200 * 1024 * 1024;
@@ -60,6 +59,8 @@ public class OkHttpUtil {
         }
     }
 
+    private MediaType contentType;
+
     /*网络回调*/
     public interface HttpCallBack {
         void onSuccss(String json);
@@ -85,25 +86,18 @@ public class OkHttpUtil {
         okHttpClient.setCookieHandler(new CookieManager(null, CookiePolicy.ACCEPT_ORIGINAL_SERVER));
         okHttpClient.setCache(new Cache(HTTP_CACHE_DIR, CACHE_SIZE));
         okHttpClient.setRetryOnConnectionFailure(true);
+        contentType = MediaType.parse(ContentType_Json);
         //……
     }
 
-    /*添加网络请求,无参数*/
-    public void addRequest(String url, int tag, final HttpCallBack callBack) {
+    /*添加网络请求*/
+    public void addRequest(String url, int tag, Object jsonObj, final HttpCallBack callBack) {
         try {
-            LogUtil.print("添加网络请求：url=" + url);
-            final Request request = new Request.Builder().url(url).tag(tag).build();
-            doRequest(request, callBack);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    /*添加网络请求，有参数*/
-    public void addRequest(String url, int tag, Map<String, String> params, final HttpCallBack callBack) {
-        try {
-            LogUtil.print("添加网络请求：url=" + url);
-            final Request request = new Request.Builder().url(url).tag(tag).post(buildParams(params)).build();
+            String params = JSON.toJSONString(jsonObj);
+            RequestBody body = RequestBody.create(contentType, params);
+            final Request request = new Request.Builder().url(url).tag(tag).post(body).build();
+            LogUtil.print("添加网络请求：url=" + url + "\tparams=" + params);
+            LogUtil.print("添加网络请求：params=" + params);
             doRequest(request, callBack);
         } catch (Exception e) {
             e.printStackTrace();
@@ -140,61 +134,9 @@ public class OkHttpUtil {
         });
     }
 
-
     /*移除网络请求*/
     public void removeRequest(int tag) {
         okHttpClient.cancel(tag);
     }
-
-    /*包装网络请求参数*/
-    private RequestBody buildParams(Map<String, String> params) {
-        FormEncodingBuilder builder = new FormEncodingBuilder();
-        Set<Map.Entry<String, String>> entries = params.entrySet();
-        for (Map.Entry<String, String> entry : entries) {
-            builder.add(entry.getKey(), entry.getValue());
-        }
-        RequestBody requestBody = builder.build();
-        LogUtil.print("参数：params=" + params);
-        return requestBody;
-    }
-
-
-    /*同步的网络请求*/
-    public String syncRequest(int tag, String url) {
-        try {
-            LogUtil.print("添加网络请求：url=" + url);
-            final Request request = new Request.Builder().url(url).tag(tag).build();
-            Response response = okHttpClient.newCall(request).execute();
-            if (!response.isSuccessful()) throw new IOException("Unexpected code " + response);
-            Headers responseHeaders = response.headers();
-            for (int i = 0; i < responseHeaders.size(); i++) {
-                LogUtil.print(responseHeaders.name(i) + ": " + responseHeaders.value(i));
-            }
-            return response.body().string();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return null;
-
-    }
-
-    /*同步的网络请求*/
-    public String syncRequest(int tag, String url, Map<String, String> params) {
-        try {
-            LogUtil.print("添加网络请求：url=" + url);
-            final Request request = new Request.Builder().url(url).tag(tag).post(buildParams(params)).build();
-            Response response = okHttpClient.newCall(request).execute();
-            if (!response.isSuccessful()) throw new IOException("Unexpected code " + response);
-            Headers responseHeaders = response.headers();
-            for (int i = 0; i < responseHeaders.size(); i++) {
-                LogUtil.print(responseHeaders.name(i) + ": " + responseHeaders.value(i));
-            }
-            return response.body().string();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
 
 }
